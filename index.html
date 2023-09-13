@@ -155,7 +155,7 @@
     </style>
 </head>
 <body>
-    <button class="A">切り替え</button>
+    <button class="A" id="hide">切り替え</button>
     <script src="https://code.jquery.com/jquery.min.js"></script>
     <h1>英単語クイズ</h1>
     <div class="bs">
@@ -226,12 +226,12 @@
                 alert('単語リストに単語がありません。');
                 return;
             }
-
             const starredWordList = wordList.filter(word => starredWords[word]);
             const wordToQuiz = starredWordList.length > 0
                 ? starredWordList[Math.floor(Math.random() * starredWordList.length)]
                 : wordList[Math.floor(Math.random() * wordList.length)];
             const correctMeaning = meanings[wordToQuiz];
+            
 
             const quizHtml = `
                 <div class="bss">
@@ -243,6 +243,9 @@
                 </div>
             `;
             quizContainer.innerHTML = quizHtml;
+            
+            const sw=document.getElementById("hide");
+            sw=true;
         }
 
         function checkAnswer(correctAnswer, word) {
