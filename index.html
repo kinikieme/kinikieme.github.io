@@ -39,9 +39,24 @@
             position: relative;
             margin-left: 20px;
         }
+        .A{
+    display: inline-block;
+    background: #b6beff;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.B{
+    background: #ffaf74;
+    height: 100px;
+}
+.C{
+    display: none;
+}
     </style>
 </head>
 <body>
+    <button class="A">切り替え</button>
+    <script src="https://code.jquery.com/jquery.min.js"></script>
     <h1>英単語クイズ</h1>
     <div>
         <label for="wordInput">英単語を追加:</label>
@@ -58,6 +73,11 @@
     <div id="quizContainer"></div>
 
     <script>
+        $(function() {
+    $(".A").click(function() {
+        $(".text").toggleClass("C");
+    });
+});
         const wordList = JSON.parse(localStorage.getItem('wordList')) || [];
         const meanings = JSON.parse(localStorage.getItem('meanings')) || {};
         const starredWords = JSON.parse(localStorage.getItem('starredWords')) || {};
@@ -92,8 +112,10 @@
                 const listItem = document.createElement('li');
                 const starredClass = starredWords[word] ? 'starred' : '';
                 listItem.innerHTML = `
+                    <div class="text">
                     <span class="${starredClass}">${index + 1}. ${word} - ${meanings[word]}</span>
                     <span class="delete-button" onclick="deleteWord('${word}')">&#10006;</span>
+                    </div>
                 `;
                 wordListElement.appendChild(listItem);
             });
