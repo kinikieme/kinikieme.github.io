@@ -216,6 +216,7 @@
                     <p class="${starredClass}">${index + 1}. ${word} </p>
                     <p class="text ${starredClass}">- ${meanings[word]}</p>
                     <span class="delete-button" onclick="deleteWord('${word}')">&#10006;</span>
+                    <button class="A" id="hide">切り替え</button>
                 `;
                 wordListElement.appendChild(listItem);
             });
