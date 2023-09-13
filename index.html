@@ -156,7 +156,6 @@
 </head>
 <body>
     <button class="A" id="hide">切り替え</button>
-    <a href="#bsss">クイズへ</a>
     <script src="https://code.jquery.com/jquery.min.js"></script>
     <h1>英単語クイズ</h1>
     <div class="bs">
@@ -170,7 +169,7 @@
         <h2>単語リスト</h2>
         <ul id="wordList"></ul>
     </div>
-    <button onclick="startQuiz()" class="b3" id="bsss">クイズを始める</button>
+    <button onclick="startQuiz()" class="b3">クイズを始める</button>
     <div id="quizContainer"></div>
 
     <script>
@@ -213,10 +212,9 @@
                 const listItem = document.createElement('li');
                 const starredClass = starredWords[word] ? 'starred' : '';
                 listItem.innerHTML = `
-                    <div class="text">
-                    <span class="${starredClass}">${index + 1}. ${word} - ${meanings[word]}</span>
+                    <p class="${starredClass}">${index + 1}. ${word} </p>
+                    <p class="text ${starredClass}">- ${meanings[word]}</p>
                     <span class="delete-button" onclick="deleteWord('${word}')">&#10006;</span>
-                    </div>
                 `;
                 wordListElement.appendChild(listItem);
             });
@@ -237,7 +235,7 @@
             const quizHtml = `
                 <div class="bss">
                 <h2>クイズ:</h2>
-                <p>この意味の単語は何ですか？</p>
+                <p>以下の単語の意味は何ですか？</p>
                 <p><strong>${wordToQuiz}</strong></p>
                 <input type="text" id="userAnswer">
                 <button onclick="checkAnswer('${correctMeaning}', '${wordToQuiz}')">回答する</button>
