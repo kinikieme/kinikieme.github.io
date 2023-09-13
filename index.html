@@ -4,11 +4,102 @@
     <title>英単語帳</title>
     <style>
         /* スタイルを追加する */
-        body {
-            margin-left: 150px;
-            margin-top: 100px;
+                /* ページ全体のスタイル */
+                body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            background-color: azure;
+            background-color: #f0f0f0;
+        }
+
+        /* ヘッダースタイル */
+        h1 {
+            text-align: center;
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        /* メインコンテナのスタイル */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 入力フォームとボタンのスタイル */
+        .input-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            flex-grow: 1;
+        }
+
+        button {
+            padding: 10px 20px;
+            width:100px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 単語リストのスタイル */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li span {
+            flex-grow: 1;
+        }
+
+        /* クイズボタンのスタイル */
+        .quiz-button {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .quiz-button:hover {
+            background-color: #1e7e34;
         }
         #wordInput {
             margin-bottom: 10px;
@@ -24,10 +115,11 @@
             margin-left: 10px;
         }
         .b3{
-            background-color: aliceblue;
-            width: 140px;
+            background-color:black;
+            width: 180px;
             height: 40px;
             font-size: 15px;
+            margin-left:50px;
         }
         .b2{
             width: 150px;
@@ -52,20 +144,28 @@
 .C{
     display: none;
 }
+.bs{
+    position:relative;
+    margin-top:50px;
+    margin-left:40px;
+}
+.bss{
+    margin-left:50px;
+}
     </style>
 </head>
 <body>
-    <button class="A">表示/非表示</button>
+    <button class="A">切り替え</button>
     <script src="https://code.jquery.com/jquery.min.js"></script>
     <h1>英単語クイズ</h1>
-    <div>
+    <div class="bs">
         <label for="wordInput">意味を追加:</label>
         <input type="text" id="wordInput">
         <label for="meaningInput" class="tex1">英単語を追加:</label>
         <input type="text" id="meaningInput" class="b2">
         <button onclick="addWord()">追加</button>
     </div>
-    <div>
+    <div class="bs">
         <h2>単語リスト</h2>
         <ul id="wordList"></ul>
     </div>
@@ -134,11 +234,13 @@
             const correctMeaning = meanings[wordToQuiz];
 
             const quizHtml = `
+                <div class="bss">
                 <h2>クイズ:</h2>
                 <p>以下の単語の意味は何ですか？</p>
                 <p><strong>${wordToQuiz}</strong></p>
                 <input type="text" id="userAnswer">
                 <button onclick="checkAnswer('${correctMeaning}', '${wordToQuiz}')">回答する</button>
+                </div>
             `;
             quizContainer.innerHTML = quizHtml;
         }
