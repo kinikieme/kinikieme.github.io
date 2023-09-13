@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>英単語帳</title>
+    <style>
+        /* スタイルを追加する */
+        body {
+            margin-left: 150px;
+            margin-top: 100px;
+            font-family: Arial, sans-serif;
+            background-color: azure;
+        }
+        #wordInput {
+            margin-bottom: 10px;
+            width: 150px;
+            height: 30px;
+        }
+        .starred {
+            color: gold;
+        }
+        .delete-button {
+            cursor: pointer;
+            color: red;
+            margin-left: 10px;
+        }
+        .b3{
+            background-color: aliceblue;
+            width: 140px;
+            height: 40px;
+            font-size: 15px;
+        }
+        .b2{
+            width: 150px;
+            height: 30px;
+            position: relative;
+            margin-left: 2px;
+        }
+        .tex1{
+            position: relative;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>英単語クイズ</h1>
+    <div>
+        <label for="wordInput">英単語を追加:</label>
+        <input type="text" id="wordInput">
+        <label for="meaningInput" class="tex1">意味を追加:</label>
+        <input type="text" id="meaningInput" class="b2">
+        <button onclick="addWord()">追加</button>
+    </div>
+    <div>
+        <h2>単語リスト</h2>
+        <ul id="wordList"></ul>
+    </div>
+    <button onclick="startQuiz()" class="b3">クイズを始める</button>
+    <div id="quizContainer"></div>
+
+    <script>
+        const wordList = JSON.parse(localStorage.getItem('wordList')) || [];
+        const meanings = JSON.parse(localStorage.getItem('meanings')) || {};
+        const starredWords = JSON.parse(localStorage.getItem('starredWords')) || {};
+        const quizContainer = document.getElementById('quizContainer');
+
+        function saveToLocalStorage() {
+            localStorage.setItem('wordList', JSON.stringify(wordList));
+            localStorage.setItem('meanings', JSON.stringify(meanings));
+            localStorage.setItem('starredWords', JSON.stringify(starredWords));
+        }
+
+        function addWord() {
+            const wordInput = document.getElementById('wordInput');
+            const meaningInput = document.getElementById('meaningInput');
+            const word = wordInput.value.trim();
+            const meaning = meaningInput.value.trim();
+            if (word !== '' && meaning !== '') {
+                wordList.push(word);
+                meanings[word] = meaning;
+                starredWords[word] = true; // デフォルトで星を付ける
+                wordInput.value = '';
+                meaningInput.value = '';
+                saveToLocalStorage();
+                displayWordList();
+            }
+        }
+
+        function displayWordList() {
+            const wordListElement = document.getElementById('wordList');
+            wordListElement.innerHTML = '';
+            wordList.forEach((word, index) => {
+                const listItem = document.createElement('li');
+                const starredClass = starredWords[word] ? 'starred' : '';
+                listItem.innerHTML = `
+                    <span class="${starredClass}">${index + 1}. ${word} - ${meanings[word]}</span>
+                    <span class="delete-button" onclick="deleteWord('${word}')">&#10006;</span>
+                `;
+                wordListElement.appendChild(listItem);
+            });
+        }
+
+        function startQuiz() {
+            if (wordList.length === 0) {
+                alert('単語リストに単語がありません。');
+                return;
+            }
+
+            const starredWordList = wordList.filter(word => starredWords[word]);
+            const wordToQuiz = starredWordList.length > 0
+                ? starredWordList[Math.floor(Math.random() * starredWordList.length)]
+                : wordList[Math.floor(Math.random() * wordList.length)];
+            const correctMeaning = meanings[wordToQuiz];
+
+            const quizHtml = `
+                <h2>クイズ:</h2>
+                <p>以下の単語の意味は何ですか？</p>
+                <p><strong>${wordToQuiz}</strong></p>
+                <input type="text" id="userAnswer">
+                <button onclick="checkAnswer('${correctMeaning}', '${wordToQuiz}')">回答する</button>
+            `;
+            quizContainer.innerHTML = quizHtml;
+        }
+
+        function checkAnswer(correctAnswer, word) {
+            const userAnswer = document.getElementById('userAnswer').value.trim().toLowerCase();
+            if (userAnswer === correctAnswer.toLowerCase()) {
+                if (starredWords[word]) {
+                    toggleStar(word);
+                }
+                alert('正解です！');
+            } else {
+                alert('不正解です。正解は: ' + correctAnswer);
+            }
+            startQuiz();
+        }
+
+        function toggleStar(word) {
+            starredWords[word] = !starredWords[word];
+            saveToLocalStorage();
+            displayWordList();
+        }
+
+        function deleteWord(word) {
+            const index = wordList.indexOf(word);
+            if (index !== -1) {
+                wordList.splice(index, 1);
+                delete meanings[word];
+                delete starredWords[word];
+                saveToLocalStorage();
+                displayWordList();
+            }
+        }
+
+        // ページを読み込んだ際に単語リストを表示
+        displayWordList();
+    </script>
+</body>
+</html>
