@@ -92,7 +92,7 @@
                 const listItem = document.createElement('li');
                 const starredClass = starredWords[word] ? 'starred' : '';
                 listItem.innerHTML = `
-                    <span class="${starredClass}">${index + 1}. ${word} ーー ${meanings[word]}</span>
+                    <span class="${starredClass}">${index + 1}. ${word} - ${meanings[word]}</span>
                     <span class="delete-button" onclick="deleteWord('${word}')">&#10006;</span>
                 `;
                 wordListElement.appendChild(listItem);
