@@ -11,7 +11,12 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
-
+        .swbt{
+            position: fixed;
+            margin-top: 100px;
+            margin-left: 1400px;
+            z-index:10
+        }
         /* ヘッダースタイル */
         h1 {
             text-align: center;
@@ -152,11 +157,16 @@
 .bss{
     margin-left:50px;
 }
+.review{
+    position: relative;
+    margin-left: 40px;
+}
+.quiz{
+    margin-left: 500px;
+}
     </style>
 </head>
 <body>
-    <button class="A" id="hide">切り替え</button>
-    <a href="#bsss">クイズへ</a>
     <script src="https://code.jquery.com/jquery.min.js"></script>
     <h1>英単語クイズ</h1>
     <div class="bs">
@@ -166,13 +176,23 @@
         <input type="text" id="meaningInput" class="b2">
         <button onclick="addWord()">追加</button>
     </div>
+    <button class="A swbt" id="hide">切り替え</button>
+    <div class="review">
+    <p>復習モード</p><Br>
+    <button class="A" id="reviewToggle">オフ</button>
+    </div>
+    <a href="#bsss" class="quiz">クイズへ</a>
+
     <div class="bs">
         <h2>単語リスト</h2>
         <ul id="wordList"></ul>
     </div>
+    
     <button onclick="startQuiz()" class="b3" id="bsss">クイズを始める</button>
+    
     <div id="quizContainer"></div>
-
+    
+    
     <script>
 
         $(function() {
@@ -220,48 +240,66 @@
                     <p class="${starredClass}" id="ssss" onclick="toggleStar('${word}')">${index + 1}. ${word} </p>
                     <p class="text ${starredClass}" onclick="toggleStar('${word}')">- ${meanings[word]}</p>
                     <span class="delete-button" onclick="deleteWord('${word}')">&#10006;</span>
-                    <button class="A" id="hide">切り替え</button>
                 `;
                 wordListElement.appendChild(listItem);
             });
         }
         
         
-        function startQuiz() {
-            if (wordList.length === 0) {
-                alert('単語リストに単語がありません。');
-                return;
-            }
-            const starredWordList = wordList.filter(word => starredWords[word]);
-            const wordToQuiz = starredWordList.length > 0
-                ? starredWordList[Math.floor(Math.random() * starredWordList.length)]
-                : wordList[Math.floor(Math.random() * wordList.length)];
-            const correctMeaning = meanings[wordToQuiz];
-        
-            const quizHtml = `
-                <div class="bss">
-                <h2>クイズ:</h2>
-                <p>以下の単語の意味は何ですか？</p>
-                <p><strong>${wordToQuiz}</strong></p>
-                <input type="text" id="userAnswer">
-                <button onclick="checkAnswer('${correctMeaning}', '${wordToQuiz}')">回答する</button>
-                </div>
-            `;
-            quizContainer.innerHTML = quizHtml;
-        }
-        
-        function checkAnswer(correctAnswer, word) {
-            const userAnswer = document.getElementById('userAnswer').value.trim().toLowerCase();
-            if (userAnswer === correctAnswer.toLowerCase()) {
-                if (starredWords[word]) {
-                    toggleStar(word);
-                }
-                alert('正解です！');
+        let reviewMode = false;
+
+        // 復習ボタンのクリックハンドラを追加
+        document.getElementById('reviewToggle').addEventListener('click', function () {
+            reviewMode = !reviewMode;
+            // 復習モードの場合にボタンのテキストを変更
+            if (reviewMode) {
+                this.textContent = 'オン';
             } else {
-                alert('不正解です。正解は: ' + correctAnswer);
+                this.textContent = 'オフ';
             }
-            startQuiz();
+        });
+        
+// クイズを開始する関数を変更
+function startQuiz() {
+    if (wordList.length === 0) {
+        alert('単語リストに単語がありません。');
+        return;
+    }
+    const starredWordList = wordList.filter(word => starredWords[word]);
+    const wordToQuiz = starredWordList.length > 0
+        ? starredWordList[Math.floor(Math.random() * starredWordList.length)]
+        : wordList[Math.floor(Math.random() * wordList.length)];
+    const correctMeaning = meanings[wordToQuiz];
+
+    const quizHtml = `
+        <div class="bss">
+        <h2>クイズ:</h2>
+        <p>以下の単語の意味は何ですか？</p>
+        <p><strong>${wordToQuiz}</strong></p>
+        <input type="text" id="userAnswer">
+        <button onclick="checkAnswer('${correctMeaning}', '${wordToQuiz}')">回答する</button>
+        </div>
+    `;
+    quizContainer.innerHTML = quizHtml;
+
+    // 復習モードの場合に星を切り替えないようにする
+    
+}
+function checkAnswer(correctAnswer, word) {
+    const userAnswer = document.getElementById('userAnswer').value.trim().toLowerCase();
+    if (userAnswer === correctAnswer.toLowerCase()) {
+        if (starredWords[word] && !reviewMode) {
+            toggleStar(word);
         }
+        alert('正解です！');
+    } else {
+        alert('不正解です。正解は: ' + correctAnswer);
+    }
+    startQuiz();
+}
+
+
+        
         
         function toggleStar(word) {
             starredWords[word] = !starredWords[word];
