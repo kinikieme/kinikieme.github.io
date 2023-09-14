@@ -174,22 +174,24 @@
     <div id="quizContainer"></div>
 
     <script>
+
         $(function() {
-    $(".A").click(function() {
-        $(".text").toggleClass("C");
-    });
-});
+            $(".A").click(function() {
+                $(".text").toggleClass("C");
+            });
+        });
+        
         const wordList = JSON.parse(localStorage.getItem('wordList')) || [];
         const meanings = JSON.parse(localStorage.getItem('meanings')) || {};
         const starredWords = JSON.parse(localStorage.getItem('starredWords')) || {};
         const quizContainer = document.getElementById('quizContainer');
-
+        
         function saveToLocalStorage() {
             localStorage.setItem('wordList', JSON.stringify(wordList));
             localStorage.setItem('meanings', JSON.stringify(meanings));
             localStorage.setItem('starredWords', JSON.stringify(starredWords));
         }
-
+        
         function addWord() {
             const wordInput = document.getElementById('wordInput');
             const meaningInput = document.getElementById('meaningInput');
@@ -205,23 +207,26 @@
                 displayWordList();
             }
         }
-
+        
         function displayWordList() {
             const wordListElement = document.getElementById('wordList');
             wordListElement.innerHTML = '';
             wordList.forEach((word, index) => {
                 const listItem = document.createElement('li');
                 const starredClass = starredWords[word] ? 'starred' : '';
+        
+                // クリックイベントハンドラを追加
                 listItem.innerHTML = `
-                    <p class="${starredClass}">${index + 1}. ${word} </p>
-                    <p class="text ${starredClass}">- ${meanings[word]}</p>
+                    <p class="${starredClass}" id="ssss" onclick="toggleStar('${word}')">${index + 1}. ${word} </p>
+                    <p class="text ${starredClass}" onclick="toggleStar('${word}')">- ${meanings[word]}</p>
                     <span class="delete-button" onclick="deleteWord('${word}')">&#10006;</span>
                     <button class="A" id="hide">切り替え</button>
                 `;
                 wordListElement.appendChild(listItem);
             });
         }
-
+        
+        
         function startQuiz() {
             if (wordList.length === 0) {
                 alert('単語リストに単語がありません。');
@@ -232,8 +237,7 @@
                 ? starredWordList[Math.floor(Math.random() * starredWordList.length)]
                 : wordList[Math.floor(Math.random() * wordList.length)];
             const correctMeaning = meanings[wordToQuiz];
-            
-
+        
             const quizHtml = `
                 <div class="bss">
                 <h2>クイズ:</h2>
@@ -244,11 +248,8 @@
                 </div>
             `;
             quizContainer.innerHTML = quizHtml;
-            
-            const sw=document.getElementById("hide");
-            sw=true;
         }
-
+        
         function checkAnswer(correctAnswer, word) {
             const userAnswer = document.getElementById('userAnswer').value.trim().toLowerCase();
             if (userAnswer === correctAnswer.toLowerCase()) {
@@ -261,13 +262,13 @@
             }
             startQuiz();
         }
-
+        
         function toggleStar(word) {
             starredWords[word] = !starredWords[word];
             saveToLocalStorage();
             displayWordList();
         }
-
+        
         function deleteWord(word) {
             const index = wordList.indexOf(word);
             if (index !== -1) {
@@ -278,9 +279,10 @@
                 displayWordList();
             }
         }
-
+        
         // ページを読み込んだ際に単語リストを表示
         displayWordList();
+        
     </script>
 </body>
 </html>
