@@ -180,6 +180,8 @@
     <div class="review">
     <p>復習モード</p><Br>
     <button class="A" id="reviewToggle">オフ</button>
+        <button class="tlon" id="onToggle">星付きにする</button>
+
     </div>
     <a href="#bsss" class="quiz">クイズへ</a>
 
@@ -257,6 +259,20 @@
             } else {
                 this.textContent = 'オフ';
             }
+        });
+        document.getElementById('onToggle').addEventListener('click', function () {
+            // 星がついていない単語だけ星を付ける
+            wordList.forEach(word => {
+                if (!starredWords[word]) {
+                    starredWords[word] = true;
+                }
+            });
+        
+            // ローカルストレージに保存
+            saveToLocalStorage();
+        
+            // 単語リストを再表示
+            displayWordList();
         });
         
 // クイズを開始する関数を変更
